@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import Cookies from "js-cookie";
 import { User } from "@/types";
 
@@ -9,15 +10,22 @@ interface AuthState {
   logout: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  token: Cookies.get("token") || null,
-  setAuth: (user, token) => {
-    Cookies.set("token", token, { expires: 7 });
-    set({ user, token });
-  },
-  logout: () => {
-    Cookies.remove("token");
-    set({ user: null, token: null });
-  },
-}));
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      user: null,
+      token: null,
+      setAuth: (user, token) => {
+        Cookies.set("token", token, { expires: 7 });
+        set({ user, token });
+      },
+      logout: () => {
+        Cookies.remove("token");
+        set({ user: null, token: null });
+      },
+    }),
+    {
+      name: "auth-storage", // localStorage key
+    },
+  ),
+);
