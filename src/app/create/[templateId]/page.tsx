@@ -34,16 +34,16 @@ export default function CreatePosterPage() {
     defaultValues: { templateId, photoUrls: [] },
   });
 
-  const { user } = useAuthStore();
+  const { user, hasHydrated } = useAuthStore();
 
   useEffect(() => {
-    if (!user) {
+    if (hasHydrated && !user) {
       toast.error("প্রথমে লগইন করুন");
       router.push("/login");
     }
-  }, [user, router]);
+  }, [user, hasHydrated, router]);
 
-  if (!user) return null;
+  if (!hasHydrated || !user) return null;
 
   const handlePhotoChange = (urls: string[]) => {
     setPhotoUrls(urls);
@@ -67,8 +67,8 @@ export default function CreatePosterPage() {
   };
 
   return (
-    <main className="mx-auto max-w-2xl p-4">
-      <Card>
+    <main className="mx-auto max-w-6xl p-4">
+      <Card className="w-sm sm:w-xl md:w-3xl">
         <CardHeader>
           <CardTitle>পোস্টারের তথ্য দিন</CardTitle>
         </CardHeader>

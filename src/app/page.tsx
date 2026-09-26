@@ -3,11 +3,12 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import api from "@/lib/api";
 import { Template } from "@/types";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 
 const OCCASIONS = [
   { label: "সব", value: "" },
@@ -75,27 +76,34 @@ export default function Home() {
         </p>
       ) : (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {templates.map((t) => (
-            <Link key={t._id} href={`/create/${t._id}`} className="group">
-              <Card className="overflow-hidden rounded-xl border-0 py-0 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-                <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted">
-                  <Image
-                    src={t.thumbnailUrl}
-                    alt={t.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    priority
-                  />
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-                    <Badge className="rounded-full">{t.occasionType}</Badge>
+          {templates.map((t, index) => (
+            <motion.div
+              key={t._id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: index * 0.08 }}
+            >
+              <Link href={`/create/${t._id}`} className="group">
+                <Card className="overflow-hidden rounded-xl border-0 py-0 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                  <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted">
+                    <Image
+                      src={t.thumbnailUrl}
+                      alt={t.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      priority
+                    />
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                      <Badge className="rounded-full">{t.occasionType}</Badge>
+                    </div>
                   </div>
-                </div>
-                <CardContent className="px-5 py-4">
-                  <h3 className="font-semibold">{t.title}</h3>
-                </CardContent>
-              </Card>
-            </Link>
+                  <CardContent className="px-5 py-4">
+                    <h3 className="font-semibold">{t.title}</h3>
+                  </CardContent>
+                </Card>
+              </Link>
+            </motion.div>
           ))}
         </div>
       )}
