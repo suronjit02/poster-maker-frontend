@@ -57,6 +57,24 @@ export default function PosterPreviewPage() {
     }
   }, [poster?.status, fetchPoster]);
 
+  const handleDownload = async () => {
+    if (!poster?.generatedImageUrl) return;
+    try {
+      const res = await fetch(poster.generatedImageUrl);
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `poster-${poster._id}.png`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch {
+      toast.error("ডাউনলোড ব্যর্থ হয়েছে");
+    }
+  };
+
   const handleRegenerate = async () => {
     setRegenerating(true);
     try {
@@ -117,16 +135,9 @@ export default function PosterPreviewPage() {
               </div>
 
               <div className="flex gap-3">
-                <Button asChild className="flex-1">
-                  <a
-                    href={poster.generatedImageUrl}
-                    download
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Download className="mr-2 h-4 w-4" />
-                    ডাউনলোড
-                  </a>
+                <Button onClick={handleDownload} className="flex-1">
+                  <Download className="mr-2 h-4 w-4" />
+                  ডাউনলোড
                 </Button>
                 <Button
                   variant="outline"
