@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,6 +15,7 @@ import PhotoUpload from "@/components/PhotoUpload";
 
 import api from "@/lib/api";
 import { posterFormSchema, PosterFormInput } from "@/lib/validations/poster";
+import { useAuthStore } from "@/store/authStore";
 
 export default function CreatePosterPage() {
   const params = useParams();
@@ -32,6 +33,17 @@ export default function CreatePosterPage() {
     resolver: zodResolver(posterFormSchema),
     defaultValues: { templateId, photoUrls: [] },
   });
+
+  const { user } = useAuthStore();
+
+  useEffect(() => {
+    if (!user) {
+      toast.error("প্রথমে লগইন করুন");
+      router.push("/login");
+    }
+  }, [user, router]);
+
+  if (!user) return null;
 
   const handlePhotoChange = (urls: string[]) => {
     setPhotoUrls(urls);

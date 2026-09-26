@@ -38,7 +38,7 @@ export default function PosterHistoryPage() {
     }
   }, [user]);
 
-    useEffect(() => {
+  useEffect(() => {
     let ignore = false;
 
     const load = async () => {
@@ -81,25 +81,26 @@ export default function PosterHistoryPage() {
   }
 
   return (
-    <main className="mx-auto max-w-6xl p-4">
-      <h1 className="mb-6 text-2xl font-bold">আমার পোস্টার</h1>
+    <main className="mx-auto w-full max-w-6xl px-6 py-12">
+      <h1 className="mb-8 text-3xl font-bold tracking-tight">আমার পোস্টার</h1>
 
       {loading ? (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="grid w-full grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
           {[1, 2, 3, 4].map((i) => (
-            <Skeleton key={i} className="h-64 w-full" />
+            <Skeleton key={i} className="h-72 w-full rounded-xl" />
           ))}
         </div>
       ) : posters.length === 0 ? (
-        <p className="text-muted-foreground">
-          এখনো কোনো পোস্টার তৈরি করেননি
-        </p>
+        <p className="text-muted-foreground">এখনো কোনো পোস্টার তৈরি করেননি</p>
       ) : (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="grid w-full grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
           {posters.map((p) => (
-            <Card key={p._id} className="overflow-hidden">
+            <Card
+              key={p._id}
+              className="overflow-hidden rounded-xl border-0 py-0 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+            >
               <Link href={`/posters/${p._id}`}>
-                <div className="relative aspect-[3/4] w-full bg-muted">
+                <div className="relative aspect-[4/5] w-full bg-muted">
                   {p.generatedImageUrl ? (
                     <Image
                       src={p.generatedImageUrl}
@@ -117,15 +118,14 @@ export default function PosterHistoryPage() {
                   )}
                 </div>
               </Link>
-              <CardContent className="p-3">
+              <CardContent className="px-4 py-3">
                 <p className="truncate text-sm font-medium">
                   {p.formData.name}
                 </p>
-                <div className="mt-1 flex items-center justify-between">
+                <div className="mt-2 flex items-center justify-between">
                   <Badge
-                    variant={
-                      p.status === "completed" ? "default" : "secondary"
-                    }
+                    variant={p.status === "completed" ? "default" : "secondary"}
+                    className="rounded-full"
                   >
                     {STATUS_LABEL[p.status]}
                   </Badge>
